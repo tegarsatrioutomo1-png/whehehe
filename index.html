@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Untuk Muti 💖</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+    <h2>Masukin Password 💌</h2>
+    <input type="password" id="password" placeholder="Tanggal spesial...">
+    <br>
+    <button id="loginBtn" onclick="checkPassword()">Masuk</button>
+</div>
+
+<!-- MAIN -->
+<div id="main" class="hidden">
+
+    <audio id="music" loop preload="auto">
+        <source src="lagu.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- Tombol Musik -->
+    <button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+    <!-- Efek confetti / emoji jatuh -->
+    <div class="effects"></div>
+
+    <!-- GIF -->
+    <div class="gif-bg">
+        <img id="photo" src="gif1.webp" alt="animasi">
+    </div>
+
+    <!-- Text Box -->
+    <div class="text-overlay">
+        <h1 id="text"></h1>
+        <div class="nav-buttons">
+            <button id="backBtn" onclick="prevPage()">⏪ Back</button>
+            <button id="nextBtn" onclick="nextPage()">Next ⏩</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
