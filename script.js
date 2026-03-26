@@ -1,151 +1,94 @@
-let page = 0;
-let music = document.getElementById("music");
-let typingInterval;
-let isTyping = false; 
-let queueNext = false;
-
-let texts = [
-    "Hai Muti... 💕",
-    "Hari ini hari spesialmu, dan aku ingin kamu bahagia 🎂",
-    "Setiap senyummu selalu bikin hatiku hangat 🥰",
-    "Aku bersyukur bisa mengenalmu, bahkan setiap detik terasa indah...",
-    "Kamu itu rumahku, tempat aku merasa nyaman 💖",
-    "Aku ingin selalu ada di sisimu, menemanimu melalui hari-hari terbaik dan tersulit...",
-    "Jika suatu hari kamu merasa lelah, ingatlah aku selalu mendukungmu 🌸",
-    "Aku janji akan selalu menyayangimu, selamanya...",
-    "Kamu adalah hadiah terindah yang pernah aku terima 🎁",
-    "Happy Birthday Muti 🎂💖\nAku sayang kamu lebih dari kata-kata bisa ungkapkan."
-];
-
-let gifs = ["gif1.webp","gif2.webp","gif3.webp"];
-let lastSlide = texts.length - 1;
-
-// ===== PASSWORD =====
-function checkPassword(){
-    let pass = document.getElementById("password").value;
-    if(pass==="0404"){
-        document.getElementById("login").style.display="none";
-        document.getElementById("main").classList.remove("hidden");
-        music.volume=0.2;
-        music.play().catch(()=>{});
-        createEffects();
-        updateSlide();
-        animateBackground();
-    } else alert("Password salah 😢");
+body{
+    margin:0;
+    font-family:sans-serif;
+    overflow:hidden;
+    background:linear-gradient(135deg,#ff9ecf,#ff6aa9);
 }
 
-// ===== BACKGROUND GRADIENT ANIM =====
-function animateBackground(){
-    let colors = ["#ffc0cb","#ff69b4","#ff1493","#ffb6c1"];
-    let i=0;
-    setInterval(()=>{
-        document.body.style.background = `linear-gradient(135deg, ${colors[i]}, ${colors[(i+1)%colors.length]})`;
-        i = (i+1)%colors.length;
-    },10000);
+/* HIDDEN */
+.hidden{ display:none; }
+
+/* LOGIN */
+#login{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(255,255,255,0.7);
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
 }
 
-// ===== UPDATE SLIDE =====
-let img = document.getElementById("photo");
-function updateSlide(){
-    fadeGif(page);
-    typeLettersBeat(page);
+/* GIF */
+.gif-bg{
+    position:fixed;
+    top:8%;
+    left:50%;
+    transform:translateX(-50%);
+}
+.gif-bg img{
+    max-width:70%;
 }
 
-function fadeGif(index){
-    img.style.opacity=0;
-    img.src=gifs[index%gifs.length];
-    img.style.transform="scale(1.05) rotate(1deg)";
-    setTimeout(()=>{img.style.opacity=1; img.style.transform="scale(1) rotate(0deg)";},100);
+/* TEXT BOX */
+.text-overlay{
+    position:fixed;
+    bottom:10%;
+    left:50%;
+    transform:translateX(-50%);
+    width:90%;
+    max-width:400px;
+    padding:20px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.7);
+    text-align:center;
+    animation:floatBox 4s ease-in-out infinite;
 }
 
-// ===== TYPING =====
-function typeLettersBeat(index){
-    clearTimeout(typingInterval);
-    let display=document.getElementById("text");
-    display.innerHTML="";
-    let text=texts[index];
-    let i=0;
-    isTyping=true;
-    queueNext=false;
-
-    function typeNext(){
-        if(i<text.length){
-            display.innerHTML+=text[i];
-            spawnEffectUltimate();
-            i++;
-            typingInterval=setTimeout(typeNext,120);
-        } else {
-            isTyping=false;
-            if(queueNext){ nextSlideAfterTyping(); }
-            if(index===lastSlide){ triggerEndingCinematic(); }
-        }
-    }
-    typeNext();
+/* FLOAT */
+@keyframes floatBox{
+    0%{transform:translateX(-50%) translateY(0);}
+    50%{transform:translateX(-50%) translateY(-10px);}
+    100%{transform:translateX(-50%) translateY(0);}
 }
 
-// ===== NAV BUTTONS =====
-function nextPage(){
-    if(isTyping){
-        clearTimeout(typingInterval);
-        document.getElementById("text").innerHTML=texts[page];
-        isTyping=false;
-        queueNext=true;
-    } else { nextSlideAfterTyping(); }
+/* TEXT */
+#text{
+    font-size:18px;
+    line-height:1.5;
 }
 
-function nextSlideAfterTyping(){
-    if(page<texts.length-1){
-        page++;
-        updateSlide();
-    }
+/* BUTTON */
+button{
+    margin:10px;
+    padding:12px 20px;
+    font-size:16px;
+    border:none;
+    border-radius:15px;
+    background:pink;
 }
 
-function prevPage(){
-    if(isTyping){ 
-        clearTimeout(typingInterval);
-        document.getElementById("text").innerHTML=texts[page];
-        isTyping=false;
-        queueNext=false;
-    } else if(page>0){ page--; updateSlide(); }
+button:active{
+    transform:scale(0.9);
 }
 
-// ===== EFFECTS =====
-function spawnEffectUltimate(){
-    let container=document.querySelector(".effects");
-    let e=document.createElement("span");
-    e.innerHTML=Math.random()<0.5?"💖":"✨";
-    e.style.left=Math.random()*100+"%";
-    e.style.fontSize=(Math.random()*25+15)+"px";
-    e.style.color=`hsl(${Math.random()*360},100%,70%)`;
-    container.appendChild(e);
-    setTimeout(()=>{ e.remove(); },3000);
+/* EFFECT */
+.effects span{
+    position:absolute;
+    animation:fall 5s linear;
+}
+@keyframes fall{
+    from{top:-10%;}
+    to{top:110%;}
 }
 
-function toggleMusic(){ if(music.paused){ music.play(); } else{ music.pause(); } }
-
-function createEffects(){
-    let container=document.querySelector(".effects");
-    setInterval(()=>{ 
-        let e=document.createElement("span"); 
-        e.innerHTML=Math.random()<0.5?"💖":"✨"; 
-        e.style.left=Math.random()*100+"%"; 
-        e.style.fontSize=(Math.random()*25+15)+"px"; 
-        e.style.color=`hsl(${Math.random()*360},100%,70%)`; 
-        container.appendChild(e); 
-        setTimeout(()=>{e.remove();},6000); 
-    },300);
+/* MOBILE FIX */
+@media(max-width:600px){
+    .text-overlay{width:95%;}
+    #text{font-size:17px;}
+    button{font-size:15px;}
 }
 
-// ===== ENDING CINEMATIC =====
-function triggerEndingCinematic(){
-    let ending = document.createElement("div");
-    ending.id="endingText";
-    ending.innerHTML="Aku Sayang Kamu Selamanya 💖";
-    document.body.appendChild(ending);
-    setTimeout(()=>{
-        ending.style.transform="translateX(-50%) scale(1)";
-        ending.style.opacity="1";
-        // confetti jatuh lebih banyak
-        for(let i=0;i<100;i++){ setTimeout(spawnEffectUltimate, i*80); }
-    },500);
-}
+/* TAP SMOOTH */
+*{ -webkit-tap-highlight-color: transparent; }
