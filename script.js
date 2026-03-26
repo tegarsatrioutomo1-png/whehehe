@@ -1,94 +1,115 @@
-body{
-    margin:0;
-    font-family:sans-serif;
-    overflow:hidden;
-    background:linear-gradient(135deg,#ff9ecf,#ff6aa9);
-}
+let page = 0;
 
-/* HIDDEN */
-.hidden{ display:none; }
+let texts = [
+"Hai Muti 💕",
+"Hari ini bukan hari biasa...",
+"Hari ini adalah hari dimana seseorang yang sangat spesial lahir ke dunia 🌍",
+"Dan orang itu adalah kamu 💖",
+"Aku bersyukur banget bisa kenal kamu",
+"Bisa ketawa bareng kamu",
+"Bisa cerita banyak hal sama kamu 💕",
+"Kamu itu bukan cuma spesial...",
+"Tapi kamu itu berarti banget buat aku 💖",
+"Di hari ulang tahun kamu ini 🎂",
+"Aku cuma pengen kamu bahagia",
+"Selalu tersenyum 😊",
+"Dan semua harapan kamu bisa tercapai ✨",
+"Aku akan selalu ada buat kamu",
+"Di saat kamu senang 😊",
+"Dan di saat kamu sedih 😢",
+"Terima kasih ya udah hadir di hidup aku 💕",
+"Selamat ulang tahun yaa cintaku 💖",
+"Aku sayang kamu, hari ini, besok, dan selamanya 💖"
+];
+
+let webps = ["gif1.webp","gif2.webp","gif3.webp"];
+
+let music = document.getElementById("music");
 
 /* LOGIN */
-#login{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:rgba(255,255,255,0.7);
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
+function checkPassword(){
+    let pass = document.getElementById("password").value;
+
+    if(pass==="0404"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("main").classList.remove("hidden");
+
+        music.play().catch(()=>{});
+        updateSlide();
+        createEffects();
+    } else{
+        alert("Password salah 😢");
+    }
 }
 
-/* GIF */
-.gif-bg{
-    position:fixed;
-    top:8%;
-    left:50%;
-    transform:translateX(-50%);
-}
-.gif-bg img{
-    max-width:70%;
+/* SLIDE */
+function updateSlide(){
+    document.getElementById("text").innerHTML="";
+    document.getElementById("photo").src=webps[page%3];
+    typeText();
 }
 
-/* TEXT BOX */
-.text-overlay{
-    position:fixed;
-    bottom:10%;
-    left:50%;
-    transform:translateX(-50%);
-    width:90%;
-    max-width:400px;
-    padding:20px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.7);
-    text-align:center;
-    animation:floatBox 4s ease-in-out infinite;
+function typeText(){
+    let words = texts[page].split(" ");
+    let i=0;
+    let el=document.getElementById("text");
+
+    let interval=setInterval(()=>{
+        if(i<words.length){
+            el.innerHTML += "<span class='pulse'>"+words[i]+"</span> ";
+            i++;
+        } else clearInterval(interval);
+    },300);
 }
 
-/* FLOAT */
-@keyframes floatBox{
-    0%{transform:translateX(-50%) translateY(0);}
-    50%{transform:translateX(-50%) translateY(-10px);}
-    100%{transform:translateX(-50%) translateY(0);}
+/* NAV */
+function nextPage(){
+    if(page<texts.length-1){
+        page++;
+        updateSlide();
+    }
 }
 
-/* TEXT */
-#text{
-    font-size:18px;
-    line-height:1.5;
+function prevPage(){
+    if(page>0){
+        page--;
+        updateSlide();
+    }
 }
 
-/* BUTTON */
-button{
-    margin:10px;
-    padding:12px 20px;
-    font-size:16px;
-    border:none;
-    border-radius:15px;
-    background:pink;
+/* EFFECT LOVE */
+function createEffects(){
+    setInterval(()=>{
+        let e=document.createElement("span");
+        e.innerHTML="💖";
+        e.style.left=Math.random()*100+"%";
+        document.querySelector(".effects").appendChild(e);
+        setTimeout(()=>e.remove(),5000);
+    },300);
 }
 
-button:active{
-    transform:scale(0.9);
+/* MUSIC */
+function toggleMusic(){
+    if(music.paused) music.play();
+    else music.pause();
 }
 
-/* EFFECT */
-.effects span{
-    position:absolute;
-    animation:fall 5s linear;
-}
-@keyframes fall{
-    from{top:-10%;}
-    to{top:110%;}
+/* GETAR */
+function vibrate(){
+    if(navigator.vibrate){
+        navigator.vibrate(50);
+    }
 }
 
-/* MOBILE FIX */
-@media(max-width:600px){
-    .text-overlay{width:95%;}
-    #text{font-size:17px;}
-    button{font-size:15px;}
-}
+/* PARALLAX */
+document.addEventListener("touchmove",function(e){
+    let x=e.touches[0].clientX;
+    let y=e.touches[0].clientY;
 
-/* TAP SMOOTH */
-*{ -webkit-tap-highlight-color: transparent; }
+    let img=document.getElementById("photo");
+
+    let moveX=(x-window.innerWidth/2)/30;
+    let moveY=(y-window.innerHeight/2)/30;
+
+    img.style.transform=`translate(${moveX}px,${moveY}px)`;
+});
